@@ -1,0 +1,71 @@
+<main class="min-h-screen bg-slate-100 px-4 py-12 text-slate-900 sm:px-6 sm:py-16">
+  <section class="mx-auto w-full max-w-2xl">
+    <header class="mb-8 flex items-end justify-between gap-4 border-b border-slate-300 pb-6">
+      <div>
+        <p class="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-teal-700">A little more focus</p>
+        <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">My tasks<span class="text-orange-500">.</span></h1>
+      </div>
+      <p class="pb-1 text-sm font-medium text-slate-500">
+        {{ todoService.todos().length }} {{ todoService.todos().length === 1 ? 'task' : 'tasks' }}
+      </p>
+    </header>
+
+    <form class="mb-8 flex gap-2 sm:gap-3" (ngSubmit)="addTodo()">
+      <label class="sr-only" for="todo-title">New task</label>
+      <input
+        id="todo-title"
+        name="todoTitle"
+        type="text"
+        [(ngModel)]="newTodoTitle"
+        placeholder="What needs doing?"
+        autocomplete="off"
+        class="min-w-0 flex-1 rounded-md border border-slate-300 bg-white px-4 py-3 text-base outline-none transition placeholder:text-slate-400 focus:border-teal-700 focus:ring-2 focus:ring-teal-700/20"
+      />
+      <button
+        type="submit"
+        class="rounded-md bg-teal-800 px-5 py-3 text-sm font-semibold text-white transition hover:bg-teal-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-800"
+      >
+        Add task
+      </button>
+    </form>
+
+    @if (todoService.todos().length === 0) {
+      <div class="border-y border-slate-300 py-12 text-center">
+        <p class="text-lg font-semibold">Nothing on the list yet.</p>
+        <p class="mt-1 text-sm text-slate-500">Add a task to get started.</p>
+      </div>
+    } @else {
+      <ul class="divide-y divide-slate-200 border-y border-slate-300 bg-white">
+        @for (todo of todoService.todos(); track todo.id) {
+          <li class="flex min-h-16 items-center gap-3 px-3 py-3 sm:px-4">
+            <input
+              [id]="'todo-' + todo.id"
+              type="checkbox"
+              [checked]="todo.completed"
+              (change)="todoService.toggleTodo(todo.id)"
+              class="size-5 shrink-0 cursor-pointer accent-teal-800"
+            />
+            <label
+              [for]="'todo-' + todo.id"
+              class="min-w-0 flex-1 cursor-pointer wrap-break-word text-base"
+              [class.text-slate-400]="todo.completed"
+              [class.line-through]="todo.completed"
+            >
+              {{ todo.title }}
+            </label>
+            <button
+              type="button"
+              (click)="todoService.deleteTodo(todo.id)"
+              [attr.aria-label]="'Delete ' + todo.title"
+              class="rounded px-2 py-1 text-sm font-medium text-slate-500 transition hover:bg-orange-50 hover:text-orange-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-700"
+            >
+              Delete
+            </button>
+          </li>
+        }
+      </ul>
+    }
+
+    <p class="mt-5 text-xs text-slate-500">Your tasks stay on this page while it is open.</p>
+  </section>
+</main>
